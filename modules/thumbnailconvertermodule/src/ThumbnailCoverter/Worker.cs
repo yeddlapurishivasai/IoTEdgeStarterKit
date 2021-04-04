@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Azure.Devices.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace ThumbnailCoverter
 {
@@ -51,6 +54,25 @@ namespace ThumbnailCoverter
             // Direct Methods
             var directMethodHelper = this.serviceProvider.GetRequiredService<IDirectMethodHelper>();
             await this.moduleClientProxy.SetMethodHandlerAsync("PrintDirectMethod", (methodRequest, usetContext) => directMethodHelper.Print(methodRequest)).ConfigureAwait(false);
+
+            // Send event to get secrets
+            var deviceName = Environment.GetEnvironmentVariable("IOTEDGE_DEVICEID");
+            var moduleName = Environment.GetEnvironmentVariable("IOTEDGE_MODULEID");
+            var eventDetails = new EventDetails
+            {
+                DirectMethod = "PrintDirectMethod",
+                ModuleId = moduleName,
+                DeviceId = deviceName
+            };
+            var eventMessageString = JsonConvert.SerializeObject(eventDetails);
+            using var eventMessage = new Message(Encoding.UTF8.GetBytes(eventMessageString))
+            {
+                ContentType = "application/json"
+            };
+
+            this.logger.LogInformation("Sending event to fetch secrets");
+            await this.moduleClientProxy.SendEventsAsync("eventqueue", eventMessage).ConfigureAwait(false);
+            this.logger.LogInformation("Finished Sending event to fetch secrets");
 
             // Thumbnail Converter
             var thumbnailProcessor = this.serviceProvider.GetRequiredService<IThumbnailProcessor>();
