@@ -1,2 +1,2 @@
 # IoTEdgeStarterKit
-Started kit for iot edge modules
+Starter kit for iot edge modules
