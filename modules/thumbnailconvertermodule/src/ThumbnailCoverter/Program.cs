@@ -21,6 +21,7 @@ namespace ThumbnailCoverter
                     services.AddHostedService<Worker>();
                     services.AddSingleton<IModuleClientProxy, ModuleClientProxy>();
                     services.AddSingleton<IDirectMethodHelper, DirectMethodHelper>();
+                    services.AddSingleton<IThumbnailProcessor, ThumbnailProcessor>();
                 });
     }
 }

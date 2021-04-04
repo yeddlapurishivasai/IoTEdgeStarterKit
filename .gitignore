@@ -7,3 +7,4 @@
 **/Properties
 /config
 /modules/thumbnailconvertermodule/src/ThumbnailCoverter/ThumbnailCoverter.csproj.user
+/.vs/IoTEdgeStarterKit/config/applicationhost.config

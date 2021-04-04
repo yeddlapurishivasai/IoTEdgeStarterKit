@@ -51,6 +51,11 @@ namespace ThumbnailCoverter
             // Direct Methods
             var directMethodHelper = this.serviceProvider.GetRequiredService<IDirectMethodHelper>();
             await this.moduleClientProxy.SetMethodHandlerAsync("PrintDirectMethod", (methodRequest, usetContext) => directMethodHelper.Print(methodRequest)).ConfigureAwait(false);
+
+            // Thumbnail Converter
+            var thumbnailProcessor = this.serviceProvider.GetRequiredService<IThumbnailProcessor>();
+            await thumbnailProcessor.ProcessImages(stoppingToken).ConfigureAwait(false);
+
         }
     }
 }

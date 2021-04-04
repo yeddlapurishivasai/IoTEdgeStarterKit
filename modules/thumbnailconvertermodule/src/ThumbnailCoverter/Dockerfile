@@ -3,8 +3,17 @@
 FROM mcr.microsoft.com/dotnet/core/runtime:3.1-bionic AS base
 WORKDIR /app
 
+# install System.Drawing native dependencies
+RUN apt-get update \
+    && apt-get install -y --allow-unauthenticated \
+        libc6-dev \
+        libgdiplus \
+        libx11-dev \
+     && rm -rf /var/lib/apt/lists/*
+
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-bionic AS build
 WORKDIR /src
+
 COPY ["modules/thumbnailconvertermodule/src/ThumbnailCoverter/ThumbnailCoverter.csproj", "modules/thumbnailconvertermodule/src/ThumbnailCoverter/"]
 RUN dotnet restore "modules/thumbnailconvertermodule/src/ThumbnailCoverter/ThumbnailCoverter.csproj"
 COPY . .
