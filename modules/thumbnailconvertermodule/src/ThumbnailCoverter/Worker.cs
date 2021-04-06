@@ -53,14 +53,14 @@ namespace ThumbnailCoverter
 
             // Direct Methods
             var directMethodHelper = this.serviceProvider.GetRequiredService<IDirectMethodHelper>();
-            await this.moduleClientProxy.SetMethodHandlerAsync("PrintDirectMethod", (methodRequest, usetContext) => directMethodHelper.Print(methodRequest)).ConfigureAwait(false);
+            await this.moduleClientProxy.SetMethodHandlerAsync("ReceiveCloudConfigurations", (methodRequest, usetContext) => directMethodHelper.ReceiveCloudConfigurations(methodRequest)).ConfigureAwait(false);
 
             // Send event to get secrets
             var deviceName = Environment.GetEnvironmentVariable("IOTEDGE_DEVICEID");
             var moduleName = Environment.GetEnvironmentVariable("IOTEDGE_MODULEID");
             var eventDetails = new EventDetails
             {
-                DirectMethod = "PrintDirectMethod",
+                DirectMethod = "ReceiveCloudConfigurations",
                 ModuleId = moduleName,
                 DeviceId = deviceName
             };

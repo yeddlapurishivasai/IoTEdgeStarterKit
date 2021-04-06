@@ -19,6 +19,7 @@ namespace ThumbnailCoverter
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<Worker>();
+                    services.AddSingleton<MyMemoryCache>();
                     services.AddSingleton<IModuleClientProxy, ModuleClientProxy>();
                     services.AddSingleton<IDirectMethodHelper, DirectMethodHelper>();
                     services.AddSingleton<IThumbnailProcessor, ThumbnailProcessor>();

@@ -5,6 +5,6 @@ namespace ThumbnailCoverter
 {
     public interface IDirectMethodHelper
     {
-        Task<MethodResponse> Print(MethodRequest methodRequest);
+        Task<MethodResponse> ReceiveCloudConfigurations(MethodRequest methodRequest);
     }
 }
