@@ -30,6 +30,9 @@ namespace ThumbnailCoverter
                 this.logger.LogInformation("Thumbnail processor started");
                 while (!cancellationToken.IsCancellationRequested)
                 {
+                    this.logger.LogInformation("Looking for new images.....");
+                    var processIntervalInSeconds = memoryCache.Get<string>("ProcessIntervalInSeconds");
+                    var result = int.TryParse(processIntervalInSeconds, out int processIntervalInSecondsValue);
                     var path = "/var/input";
                     var thumbnailPath = "/var/thumbnails";
                     string[] fileEntries = Directory.GetFiles(path);
@@ -59,7 +62,7 @@ namespace ThumbnailCoverter
                             this.logger.LogError($"Error while processing file {fileName}: {ex.Message}");
                         }
                     }
-                    await Task.Delay(10000).ConfigureAwait(false);
+                    await Task.Delay(result && processIntervalInSecondsValue  > 0 ? processIntervalInSecondsValue * 1000: 10000).ConfigureAwait(false);
                 }
             }
             catch(Exception ex)

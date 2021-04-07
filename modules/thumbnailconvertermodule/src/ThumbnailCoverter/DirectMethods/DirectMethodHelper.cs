@@ -23,7 +23,7 @@ namespace ThumbnailCoverter
             this.moduleClientProxy = moduleClientProxy;
             this.memoryCache = memoryCache.Cache;
         }
-        
+
         public Task<MethodResponse> ReceiveCloudConfigurations(MethodRequest methodRequest)
         {
             this.logger.LogInformation("Reveive cloud configuration called");
@@ -35,15 +35,13 @@ namespace ThumbnailCoverter
                 var data = Encoding.UTF8.GetString(methodRequest.Data);
                 this.logger.LogInformation("Received Method data : " + data);
                 var payloadModel = JsonConvert.DeserializeObject<Dictionary<string, string>>(data);
-                foreach(var item in payloadModel)
+                foreach (var item in payloadModel)
                 {
                     this.logger.LogInformation($"Adding {item.Key} to in-memory cache");
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
                     // Set cache entry size by extension method.
                     .SetSize(1);
                     this.memoryCache.Set<string>(item.Key, item.Value, cacheEntryOptions);
-                    var value = this.memoryCache.Get<string>(item.Key);
-                    this.logger.LogInformation(value);
                 }
 
                 methodResponseMessage = "Successful";
@@ -55,10 +53,17 @@ namespace ThumbnailCoverter
                 httpStatusCode = 400;
             }
 
-            this.logger.LogInformation($"Executed Direct Method: {methodRequest.Name} Response: {methodResponseMessage} Status Code:{ httpStatusCode}");
+            this.logger.LogInformation($"Executed Direct Method ReceiveCloudConfigurations: {methodRequest.Name} Response: {methodResponseMessage} Status Code:{ httpStatusCode}");
 
-            string result = "{\"result\":\"Executed direct method: " + methodResponseMessage + "\"}";
+            string result = "{\"result\":\"Executed direct method ReceiveCloudConfigurations: " + methodResponseMessage + "\"}";
             return Task.FromResult(new MethodResponse(Encoding.UTF8.GetBytes(result), httpStatusCode));
+        }
+
+        public Task<MethodResponse> PrintHello(MethodRequest methodRequest)
+        {
+            this.logger.LogInformation("Hello from thumbnailconverter module.");
+            string result = "{\"result\":\"Executed direct method PrintHello: Successful\"}";
+            return Task.FromResult(new MethodResponse(Encoding.UTF8.GetBytes(result), 200));
         }
     }
 }

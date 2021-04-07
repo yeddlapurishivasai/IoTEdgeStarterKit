@@ -23,6 +23,7 @@ namespace ThumbnailCoverter
                     services.AddSingleton<IModuleClientProxy, ModuleClientProxy>();
                     services.AddSingleton<IDirectMethodHelper, DirectMethodHelper>();
                     services.AddSingleton<IThumbnailProcessor, ThumbnailProcessor>();
+                    services.AddSingleton<IDesiredPropertiesCallbackProcessor, DesiredPropertiesCallbackProcessor>();
                 });
     }
 }

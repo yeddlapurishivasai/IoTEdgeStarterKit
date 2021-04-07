@@ -51,11 +51,16 @@ namespace ThumbnailCoverter
             this.logger.LogInformation("Module Initialize called");
             await this.moduleClientProxy.OpenAsync(stoppingToken).ConfigureAwait(false);
 
-            // Direct Methods
+            // Direct Methods wireup
             var directMethodHelper = this.serviceProvider.GetRequiredService<IDirectMethodHelper>();
+            await this.moduleClientProxy.SetMethodHandlerAsync("PrintHello", (methodRequest, usetContext) => directMethodHelper.PrintHello(methodRequest)).ConfigureAwait(false);
             await this.moduleClientProxy.SetMethodHandlerAsync("ReceiveCloudConfigurations", (methodRequest, usetContext) => directMethodHelper.ReceiveCloudConfigurations(methodRequest)).ConfigureAwait(false);
 
-            // Send event to get secrets
+            // Desired properties update callback wireup
+            var desiredPropertiesCallbackProcessor = this.serviceProvider.GetRequiredService<IDesiredPropertiesCallbackProcessor>();
+            await this.moduleClientProxy.SetDesiredPropertyUpdateCallbackAsync((desiredProperties, userContext) => desiredPropertiesCallbackProcessor.OnDesiredPropertiesUpdate(desiredProperties)).ConfigureAwait(false);
+
+            // Send event to get secrets to get configuration
             var deviceName = Environment.GetEnvironmentVariable("IOTEDGE_DEVICEID");
             var moduleName = Environment.GetEnvironmentVariable("IOTEDGE_MODULEID");
             var eventDetails = new EventDetails
@@ -70,11 +75,11 @@ namespace ThumbnailCoverter
                 ContentType = "application/json"
             };
 
-            this.logger.LogInformation("Sending event to fetch secrets");
+            this.logger.LogInformation("Sending event to fetch cloud configuration");
             await this.moduleClientProxy.SendEventsAsync("eventqueue", eventMessage).ConfigureAwait(false);
-            this.logger.LogInformation("Finished Sending event to fetch secrets");
+            this.logger.LogInformation("Finished Sending event to fetch cloud configuration");
 
-            // Thumbnail Converter
+            // Start Thumbnail Converter
             var thumbnailProcessor = this.serviceProvider.GetRequiredService<IThumbnailProcessor>();
             await thumbnailProcessor.ProcessImages(stoppingToken).ConfigureAwait(false);
 
