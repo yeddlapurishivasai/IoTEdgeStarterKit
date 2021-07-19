@@ -35,15 +35,15 @@ chmod 777 input
 chmod 777 thumbnails
 ```
 
-Step 6: Containerize and publish the thumbnailconverter project to ACR.
+Step 7: Containerize and publish the thumbnailconverter project to ACR.
 
-Step 7: Open the IoTEdgeStarterKit folder in VSCode update the deployment.template.debug.json with ACR credentials and the image section of thumbnailconvertermodule with the image link of the published image.
+Step 8: Open the IoTEdgeStarterKit folder in VSCode update the deployment.template.debug.json with ACR credentials and the image section of thumbnailconvertermodule with the image link of the published image.
 
-Step 8: Add Set IoTHub connection string in the VSCode explorer.
+Step 9: Add Set IoTHub connection string in the VSCode explorer.
 
-Step 9: Right click on deployment.template.debug.json and select GenerateDeploymentManifest.
+Step 10: Right click on deployment.template.debug.json and select GenerateDeploymentManifest.
 
-Step 10: Right click on the generated deployment manifest under config/deployment.debug.amd64.json and click create deployment for single device and select the device to which it needs to be deployed.
+Step 11: Right click on the generated deployment manifest under config/deployment.debug.amd64.json and click create deployment for single device and select the device to which it needs to be deployed.
 
 Features
 - .NetCore worker as IoT Edge module
